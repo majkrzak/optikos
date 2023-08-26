@@ -12,6 +12,7 @@
 static enum {
   PENDING,
   SELECTING_COLUMN,
+  SELECTING_ROW,
   SCANNING,
 } _state = PENDING;
 
@@ -28,21 +29,28 @@ static void _tick() {
     break;
   case SELECTING_COLUMN:
     mux_select(col);
+    _state = SELECTING_ROW;
+    break;
+  case SELECTING_ROW:
+    adc_select(row);
     _state = SCANNING;
     break;
   case SCANNING:
-    adc_read(row, frame + row * WIDTH + col);
-    row += 1;
-    row %= HEIGHT;
-    if (!row) {
-      col += 1;
-      col %= WIDTH;
-      if (!col) {
+    adc_read(frame + row * WIDTH + col);
+    col += 1;
+    col %= WIDTH;
+    if (!col) {
+      row += 1;
+      row %= HEIGHT;
+      if (!row) {
         _state = PENDING;
         frame_ready = true;
       } else {
-        _state = SELECTING_COLUMN;
+        _state = SELECTING_ROW;
       }
+    }
+    else {
+        _state = SELECTING_COLUMN;
     }
     break;
   }

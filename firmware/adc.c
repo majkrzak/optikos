@@ -1,6 +1,7 @@
 #include "adc.h"
 
 #include <avr/interrupt.h>
+#include <avr/cpufunc.h>
 #include <avr/io.h>
 #include <stddef.h>
 #include <stdlib.h>
@@ -24,7 +25,9 @@ static uint8_t _map_idx(size_t idx) {
   }
 }
 
-static void _select_channel(size_t idx) { ADMUX = _map_idx(idx); }
+void adc_select(size_t idx) {
+    ADMUX = _map_idx(idx);
+}
 
 static void _start() { ADCSRA |= (1 << ADSC); }
 
@@ -37,8 +40,7 @@ void adc_init() {
   ADCSRB = 0;
 }
 
-void adc_read(size_t idx, uint8_t *res) {
+void adc_read(uint8_t *res) {
   _res = res;
-  _select_channel(idx);
   _start();
 }

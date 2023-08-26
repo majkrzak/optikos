@@ -6,7 +6,7 @@
 void mux_init() { DDRB = 1 << PB4 | 1 << PB5 | 1 << PB6 | 1 << PB7; }
 
 void mux_select(size_t idx) {
-  PORTB &= ~(1 << PB7);
+  PORTB |= 1 << PB7;
   _NOP();
   for (size_t i = 0; i < 3; ++i) {
     if (idx & 1 << i) {
@@ -16,5 +16,5 @@ void mux_select(size_t idx) {
     }
   }
   _NOP();
-  PORTB |= 1 << PB7;
+  PORTB &= ~(1 << PB7);
 }
