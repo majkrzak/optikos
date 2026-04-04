@@ -33,10 +33,10 @@ static void _start() { ADCSRA |= (1 << ADSC); }
 
 static uint8_t *_res;
 
-ISR(ADC_vect) { *_res = ADC >> 2; }
+ISR(ADC_vect) { *_res = ~(uint8_t)(ADC >> 2); }
 
 void adc_init() {
-  ADCSRA = (1 << ADEN) | (1 << ADIE);
+  ADCSRA = (1 << ADEN) | (1 << ADIE) | ( 1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0);
   ADCSRB = 0;
 }
 
